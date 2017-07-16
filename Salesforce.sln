@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedHost", "FeedHost\FeedHost.csproj", "{53BC4024-7EC3-4BA6-A8FC-01F5F2B7F78D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedHost.Tests", "FeedHost.Tests\FeedHost.Tests.csproj", "{501EA9B3-AC9C-4FBB-A61E-831C3A8D0669}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53BC4024-7EC3-4BA6-A8FC-01F5F2B7F78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53BC4024-7EC3-4BA6-A8FC-01F5F2B7F78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53BC4024-7EC3-4BA6-A8FC-01F5F2B7F78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53BC4024-7EC3-4BA6-A8FC-01F5F2B7F78D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{501EA9B3-AC9C-4FBB-A61E-831C3A8D0669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501EA9B3-AC9C-4FBB-A61E-831C3A8D0669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501EA9B3-AC9C-4FBB-A61E-831C3A8D0669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501EA9B3-AC9C-4FBB-A61E-831C3A8D0669}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

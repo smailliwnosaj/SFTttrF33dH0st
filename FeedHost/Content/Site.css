@@ -1,0 +1,125 @@
+﻿body {
+    padding-top: 0px;
+    padding-bottom: 20px;
+    font-family: Arial,sans-serif;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+.body-content input,
+.body-content select,
+.body-content textarea {
+    max-width: 280px;
+}
+
+.navbar-brand {
+    padding: 4px 15px;
+}
+.navbar-brand span {
+    position: relative;
+    top: 10px;
+}
+.navbar-brand img {
+    height: 40px;
+    margin-right: 15px;
+}
+
+.jumbotron {
+    padding: 15px;
+}
+.jumbotron h1 {
+    font-size: 36px;
+}
+
+.spinner{
+     -webkit-transform-origin: 50% 58%;
+     transform-origin:50% 58%;
+     -ms-transform-origin:50% 58%; /* IE 9 */
+     -webkit-animation: spin 1s infinite linear;
+     -moz-animation: spin 1s infinite linear;
+     -o-animation: spin 1s infinite linear;
+     animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fh-feed-item {
+    background-color: #fff;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 5px;
+    border: #ccc 1px solid;
+    border-radius: 5px;
+    position: relative;
+    font-size: 14px;
+}
+.fh-feed-item:hover {
+    background-color: #f6f6f6;
+}
+.fh-feed-item .profileimage {
+    width: 100%;
+}
+.fh-feed-item .profileimage img {
+    position: relative;
+    top: 8px;
+    max-width: 70px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+}
+@media screen and (min-width: 768px) {
+    .fh-feed-item .profileimage img {
+        width: 100%;
+    }
+}
+.fh-feed-item .name,
+.fh-feed-item .screenname,
+.fh-feed-item .date {
+    display: inline-block;
+    margin-right: 8px;
+}
+.fh-feed-item .name {
+    font-weight: bold;
+}
+.fh-feed-item .screenname {
+
+}
+.fh-feed-item .date {
+
+}
+.fh-feed-item .clear {
+    clear:both;
+    height: 0px;
+    width: 100px;
+}
+.fh-feed-item .text {
+    padding-top: 8px;
+    line-height: 1.4;
+}
+.fh-feed-item .shares {
+    padding-top: 8px;
+}
+.fh-feed-item .shares i {
+    color: lightblue;
+}
+.fh-feed-item .shares i::before {
+    position: relative;
+    top: 1.5px;
+}
+.fh-feed-item .logo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+}
