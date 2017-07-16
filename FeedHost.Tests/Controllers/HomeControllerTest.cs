@@ -1,6 +1,5 @@
 ﻿using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FeedHost;
 using FeedHost.Controllers;
 
 namespace FeedHost.Tests.Controllers
@@ -9,17 +8,22 @@ namespace FeedHost.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
-        public void Index()
+        public void HomeControllerIndexTest()
         {
+            var context = new FeedHost.Mockable.Context()
+            {
+                // Optional: Pass in custom context parameters
+            };
+
             // Arrange
-            HomeController controller = new HomeController();
+            HomeController controller = new HomeController(context);
 
             // Act
             ViewResult result = controller.Index() as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("Home Page", result.ViewBag.Title);
+            Assert.AreEqual("Salesforce Twitter Challenge - Jason Williams", result.ViewBag.Title);
         }
     }
 }

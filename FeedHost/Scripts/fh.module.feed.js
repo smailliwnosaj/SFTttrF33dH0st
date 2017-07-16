@@ -30,7 +30,7 @@
                         var s = textArray[x];
                         if (s.length > 0) {
                             if (s[0] == "@" || s[0] == "#") {
-                                s = "<a href='javascript:void(0);' onclick='fh.module.feed.search($(this).text())'>" + s + "</a>";
+                                s = "<a href='javascript:void(0);' onclick='fh.module.feed.search($(this).text().substring(1, $(this).text().length))'>" + s + "</a>";
                             }
                             else if (s.length > 4 && s.substring(0, 4).toLowerCase() == "http" && s[s.length - 1] != "…") {
                                 s = "<a href='" + s + "' target='_blank'>" + s + "</a>";
@@ -49,7 +49,9 @@
 
                         "<div class='col-sm-9 col-md-9 col-lg-9'>" +
                           "<div class='name'>" + data.Items[i].UserName + "</div>" +
-                          "<div class='screenname'>@" + data.Items[i].ScreenName + "</div>" +
+                          "<div class='screenname'>" +
+                            "<a href='javascript:void(0);' onclick='fh.module.feed.search($(this).text().substring(1, $(this).text().length))'>@" + data.Items[i].ScreenName + "</a>" +
+                          "</div>" +
                           "<div class='date'>" +
                               fh.utility.getDateString(new Date(data.Items[i].Date || 0), "yyyy/MM/dd") + "  " +
                               fh.utility.getTimeString(new Date(data.Items[i].Date || 0), "hh:mm tt") +
@@ -71,8 +73,8 @@
                 }
             }
             else {
-                // TODO: Show "No results found." message
-                // TODO: Log error
+                $("#" + fh.module.feed._elementId).append("No results found"); // TODO: Localize
+                console.log("Info: No results found.")
             }
         };
         var error = function (err) {
@@ -98,6 +100,7 @@
     },
 
     initialize(elementId, searchString) {
+        console.log("fh.module.feed.initialize()");
         fh.module.feed._elementId = elementId;
         fh.module.feed.initializeEvents();
         fh.module.feed.search(searchString);
@@ -112,13 +115,13 @@
     },
 
     initializeEvents: function () {
-        $(".fh-search-button").on("click", function () {
+        $(".fh-search-button").off("click").on("click", function () {
             console.log("event: .fh-search-button click");
             fh.module.feed.getFeedResults();
         });
 
-        $(".fh-search-box").on("keypress", function (e) {
-            if (e.keyCode == 13) {
+        $(".fh-search-box").off("keypress").on("keypress", function (e) {
+            if (e.keyCode === 13) {
                 console.log("event: .fh-search-box onkeypress=[Enter]");
                 $(".fh-search-button").trigger("click");
             }

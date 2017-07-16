@@ -2,7 +2,7 @@
     <h1>@@salesforce</h1>
     @*<p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>*@
     @*<p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>*@
-    <div id="fh-feed"></div>
+    <div id="fh-feed-container"></div>
     <div style="clear:both;"></div>
 </div>
 @*<div class="row">
@@ -28,7 +28,7 @@
 @*<div id="fh-feed"></div>*@
 
 <script>
-    $(window).load(function () {
-        fh.module.feed.initialize("fh-feed", "");
+    $(window).ready(function () {
+        fh.module.feed.initialize("fh-feed-container", "");
     });
 </script>

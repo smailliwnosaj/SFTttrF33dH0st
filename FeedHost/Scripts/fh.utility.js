@@ -68,10 +68,10 @@
             statusCode: {
                 401: function () {
                     console.log("exec: fh.utility status code 401 redirect to sign out page.");
-                    window.location = fh.appPath + "account/logout";
+                    //window.location = fh.appPath + "account/logout";
                 },
                 404: function () {
-                    fh.utility._fileNotFoundErrorOccurred = true;
+                    //fh.utility._fileNotFoundErrorOccurred = true;
                     console.log("exec: fh.utility status code 404 occurred.");
                 }
             },
@@ -86,7 +86,7 @@
                 }
             })
             .fail(function (request, status, error) {
-                var errorMessage = fh.resources.common.message.applicationError;
+                var errorMessage = "Application error"; // fh.resources.common.message.applicationError;
                 try {
                     console.error("exec: fh.utility fail status: " + request.status);
                     // In some cases, "error" is retruned as an HTML error page instead of a json error response.
@@ -111,16 +111,16 @@
                     console.warn(e);
                     // SWALLOW ERROR: An error could be thrown when posting the orignial error to the server logs.  Re throwing could cause an endless loop.
                 }
-                fh.utility.ajaxErrorDisplay(errorMessage, errorfunction);
+                //fh.utility.ajaxErrorDisplay(errorMessage, errorfunction);
             })
             //.always(function () {})
             .then(thenfunction || function () { });
 
-        fh.utility._ajaxRequestArray.push(rqst);
+        //fh.utility._ajaxRequestArray.push(rqst);
         return rqst;
     },
 
-    _ajaxRequestArray: [],
+    //_ajaxRequestArray: [],
 
     //ajaxIgnoreAllPendingResponses: function () {
     //    console.log("fh.utility ajaxIgnoreAllPendingResponses()")

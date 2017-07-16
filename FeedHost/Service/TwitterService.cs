@@ -9,12 +9,15 @@ using System.IO;
 using System.Collections.Generic;
 using System;
 using System.Globalization;
+using System.Diagnostics;
+using FeedHost.Helper;
 
 namespace FeedHost.Service
 {
     public class TwitterService : IViewModelService<TwitterViewModel> 
     {
-        public TwitterViewModel ViewModel { get; set; }
+        public TwitterViewModel ViewModel { get; set; } // Required by IViewModelService<T>
+
         private Context _context { get; set; }
         private string _bearerToken { get; set; }
         private readonly string _twitterDateFormat = "ddd MMM dd HH:mm:ss +ffff yyyy";
@@ -26,14 +29,20 @@ namespace FeedHost.Service
 
         public TwitterService(Context context, string searchString)
         {
+            // Allow for injection of Mockable text context
+            this._context = context; // Must come before PreventNullRefExceptions();
+
+            // Prepare ViewModel
             PreventNullRefExceptions();
+
             if (string.IsNullOrEmpty(this._bearerToken))
                 SetBearerToken();
             if (!string.IsNullOrEmpty(this._bearerToken))
             {
-                var searchResults = GetSearchResults(searchString);
+                var searchResults = GetSearchResults(searchString); // Search string can be null - don't worry about it.
                 if (searchResults != null)
                 {
+                    // Populate this.ViewModel.Items
                     SetItems(searchResults);
                 }
             }
@@ -63,44 +72,56 @@ namespace FeedHost.Service
         {
             var bearerToken = string.Empty;
             const string apiRequestForBearerTokenPath = "https://api.twitter.com/oauth2/token";
-            //const string apiSearchPath = "https://api.twitter.com/1.1/search/tweets.json";
 
             var requestForBearerToken = WebRequest.Create(apiRequestForBearerTokenPath);
             try
             {
                 requestForBearerToken.Headers.Add("Authorization", "Basic " + GetOauthEncodedPair());
             }
-            catch
+            catch (Exception ex)
             {
-                // Could not append headers.  Request may have already been flushed;
-                // TODO: Log error
+                Logger.LogInfo("Could not append headers.  Request may have already been flushed.");
+                Logger.LogError(ex);
+                return;
             }
             try
             {
                 requestForBearerToken.Method = "POST";
             }
-            catch
+            catch (Exception ex)
             {
-                // Could not change request method.  Request may have already been flushed;
-                // TODO: Log error
+                Logger.LogInfo("Could not change request method.  Request may have already been flushed.");
+                Logger.LogError(ex);
+                return;
             }
             try
             {
                 requestForBearerToken.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
             }
-            catch
+            catch (Exception ex)
             {
-                // Could not set content type.  Request may have already been flushed;
-                // TODO: Log exception
+                Logger.LogInfo("Could not set content type.  Request may have already been flushed.");
+                Logger.LogError(ex);
+                return;
             }
 
-            using (Stream requestForBearerTokenStream = requestForBearerToken.GetRequestStream())
+            try
             {
-                string strRequestContent = "grant_type=client_credentials";
-                byte[] bytearrayRequestContent = System.Text.Encoding.UTF8.GetBytes(strRequestContent);
-                requestForBearerTokenStream.Write(bytearrayRequestContent, 0, bytearrayRequestContent.Length);
+                using (Stream requestForBearerTokenStream = requestForBearerToken.GetRequestStream())
+                {
+                    string strRequestContent = "grant_type=client_credentials";
+                    byte[] bytearrayRequestContent = System.Text.Encoding.UTF8.GetBytes(strRequestContent);
+                    requestForBearerTokenStream.Write(bytearrayRequestContent, 0, bytearrayRequestContent.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInfo("Trouble building request stream.");
+                Logger.LogError(ex);
+                return;
             }
 
+            // Get bearer token from Twitter API
             try
             {
                 string responseJson = string.Empty;
@@ -116,9 +137,11 @@ namespace FeedHost.Service
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // TODO: Log exception
+                Logger.LogInfo("Trouble getting bearer token from Twitter API.");
+                Logger.LogError(ex);
+                return;
             }
         }
 
@@ -135,37 +158,39 @@ namespace FeedHost.Service
                     (string.IsNullOrEmpty(searchString) ? string.Empty : HttpUtility.UrlEncode(" " + searchString))
                 )
             );
+
             try
             {
                 requestForSearchResults.Headers.Add("Authorization", "Bearer " + (this._bearerToken ?? string.Empty));
             }
-            catch
+            catch (Exception ex)
             {
-                // Could not append headers.  Request may have already been flushed;
-                // TODO: Log error
+                Logger.LogInfo("Could not append headers.  Request may have already been flushed.");
+                Logger.LogError(ex);
                 return null;
             }
             try
             {
                 requestForSearchResults.Method = "GET";
             }
-            catch
+            catch (Exception ex)
             {
-                // Could not change request method.  Request may have already been flushed;
-                // TODO: Log error
+                Logger.LogInfo("Could not change request method.  Request may have already been flushed.");
+                Logger.LogError(ex);
                 return null;
             }
             try
             {
                 requestForSearchResults.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
             }
-            catch
+            catch (Exception ex)
             {
-                // Could not set content type.  Request may have already been flushed;
-                // TODO: Log exception
+                Logger.LogInfo("Could not set content type.  Request may have already been flushed.");
+                Logger.LogError(ex);
                 return null;
             }
 
+            // Get search results from Twitter API
             try
             {
                 string responseJson = string.Empty;
@@ -179,9 +204,10 @@ namespace FeedHost.Service
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // TODO: Log exception
+                Logger.LogInfo("Trouble getting search results from Twitter API.");
+                Logger.LogError(ex);
                 return null;
             }
             return result;
@@ -192,17 +218,28 @@ namespace FeedHost.Service
         {
             if (searchResults == null) return;
             var counter = 0;
-            foreach (var status in searchResults["statuses"])
+            try
             {
-                counter++;
-                if (counter > 10) break;
-                SetItem(status);
+                foreach (var status in searchResults["statuses"])
+                {
+                    counter++;
+                    if (counter > 10) break;
+                    SetItem(status);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInfo("Result from Twitter search API contains unexpected data.");
+                Logger.LogError(ex);
+                return;
             }
         }
 
         // Step 4
         private void SetItem(JToken searchResultItem)
         {
+            if (searchResultItem == null) return;
+
             Model.TwitterFeedItem item = null;
             try
             {
@@ -226,10 +263,11 @@ namespace FeedHost.Service
                     UserName = user == null ? string.Empty : (user["name"] ?? string.Empty).ToString(),
                 };
             }
-            catch
+            catch (Exception ex)
             {
-                // Trouble parsing Tweet
-                // TODO: Log exception
+                Logger.LogInfo("Trouble parsing Tweet data.");
+                Logger.LogError(ex);
+                return;
             }
             if (item != null) this.ViewModel.Items.Add(item);
         }
